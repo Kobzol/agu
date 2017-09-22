@@ -8,8 +8,17 @@
 
 struct UserData
 {
+	UserData(cv::Mat* mat, Polygon* polygon) : mat(mat), polygon(polygon)
+	{
+
+	}
+
 	cv::Mat* mat;
 	Polygon* polygon;
+	int counter = 0;
+	Point from;
+	Point to;
+	Point target;
 };
 
 void CallBackFunc(int event, int x, int y, int flags, void* userdata)
@@ -18,6 +27,27 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 
 	if (event == cv::EVENT_LBUTTONDOWN)
 	{
+		/*if (data->counter == 0)
+		{
+			data->from = Point(x, y);
+		}
+		else if (data->counter == 1)
+		{
+			data->to = Point(x, y);
+		}
+		else
+		{
+			data->target = Point(x, y);
+			*data->mat = cv::Mat::zeros(cv::Size(data->mat->rows, data->mat->cols), data->mat->type());
+
+			std::cerr << testPointRight(data->target, data->from, data->to) << std::endl;
+		}
+
+		data->counter = (data->counter + 1) % 3;
+
+		cv::line(*data->mat, data->from, data->to, cv::Scalar(0.0, 1.0, 0.0));
+		cv::circle(*data->mat, data->target, 5, cv::Scalar::all(1.0));*/
+
 		std::cout << (data->polygon->test((float) x, (float) y, *data->mat) ? "In" : "Out") << std::endl;
 		cv::imshow("Polygon", *data->mat);
 	}
@@ -29,15 +59,7 @@ int main()
 	Polygon polygon = Polygon::generate(0.0f, 300.0f, 6);
 	polygon.draw(mat);
 
-	UserData data = { &mat, &polygon };
-
-	/*Point target(10, 10);
-	Point from(3, 500);
-	Point to(3, 0);
-
-	std::cerr << testPointRight(target, from, to) << std::endl;
-	cv::line(mat, from, to, cv::Scalar::all(1.0f));
-	cv::circle(mat, target, 10, cv::Scalar(0.0, 0.0, 1.0));*/
+	UserData data(&mat, &polygon);
 
 	cv::namedWindow("Polygon", 1);
 	cv::setMouseCallback("Polygon", CallBackFunc, &data);

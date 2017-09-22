@@ -19,7 +19,7 @@ public:
 
 private:
 	bool testConcave(float x, float y, cv::Mat& mat);
-	bool testConvex(size_t startIndex, size_t endIndex, Point lastWeight, float x, float y, cv::Mat& mat);
+	bool testConvex(std::vector<Point> points, float x, float y, cv::Mat& mat);
 
 	std::vector<Line> getLines();
 };

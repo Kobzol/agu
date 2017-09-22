@@ -26,7 +26,7 @@ int testPointccw(const Point& p, const Point& p1, const Point& p2)
 
 bool testPointRight(const Point& p, const Point& p1, const Point& p2)
 {
-	return testPointccw(p, p1, p2) < 0;
+	return testPointccw(p, p1, p2) > 0;
 }
 
 bool liesInsideTriangle(const Point& point, const std::vector<Point>& triangle)

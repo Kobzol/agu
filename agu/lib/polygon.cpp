@@ -4,6 +4,8 @@
 #include <random>
 #include <iostream>
 
+#define VERBOSE
+
 Polygon Polygon::generate(float min, float max, int pointCount)
 {
 	std::default_random_engine engine;
@@ -16,7 +18,6 @@ Polygon Polygon::generate(float min, float max, int pointCount)
 	}
 	Polygon polygon;
 	cv::convexHull(points, polygon.points);
-	polygon.points.push_back(polygon.points[0]);
 	return polygon;
 }
 
@@ -39,7 +40,7 @@ void Polygon::draw(cv::Mat& mat, bool fill)
 
 bool Polygon::test(float x, float y, cv::Mat& mat)
 { 
-	return this->testConvex(0, this->points.size(), weightCenter(this->points), x, y, mat);
+	return this->testConvex(this->points, x, y, mat);
 	//return this->testConcave(x, y, mat);
 }
 
@@ -53,8 +54,8 @@ bool Polygon::testConcave(float x, float y, cv::Mat& mat)
 
 	Line guidingLine = std::make_pair(src, src + to);
 
-	//cv::line(mat, guidingLine.first, guidingLine.second, cv::Scalar(0.0f, 0.0f, 1.0f));
-	//mat.at<cv::Vec3f>(guide.y, guide.x) = cv::Vec3f(0.0f, 1.0f, 0.0f);
+	/*cv::line(mat, guidingLine.first, guidingLine.second, cv::Scalar(0.0f, 0.0f, 1.0f));
+	mat.at<cv::Vec3f>(guide.y, guide.x) = cv::Vec3f(0.0f, 1.0f, 0.0f);*/
 
 	int count = 0;
 	for (auto& line : this->getLines())
@@ -68,46 +69,42 @@ bool Polygon::testConcave(float x, float y, cv::Mat& mat)
 	return count % 2 != 0;
 }
 
-bool Polygon::testConvex(size_t startIndex, size_t endIndex, Point lastWeight, float x, float y, cv::Mat& mat)
+bool Polygon::testConvex(std::vector<Point> points, float x, float y, cv::Mat& mat)
 {
-	std::cerr << "Convex from " << startIndex << " to " << endIndex << std::endl;
-
-	if (fabs(endIndex - startIndex) <= 2)
+	if (points.size() == 3)
 	{
 		std::vector<cv::Point> intPoints;
-		for (int i = startIndex; i < endIndex; i++)
+		for (auto& point : points)
 		{
-			intPoints.push_back(cv::Point(this->points[i].x, this->points[i].y));
+			intPoints.push_back(point);
 		}
-		intPoints.push_back(weightCenter(this->points));
 		cv::fillConvexPoly(mat, intPoints, cv::Scalar(0.0f, 1.0f, 1.0f));
 
-		std::vector<Point> triangle(this->points.begin() + startIndex, this->points.begin() + endIndex);
-		triangle.push_back(weightCenter(this->points));
-		return liesInsideTriangle(Point(x, y), triangle);
+		return liesInsideTriangle(Point(x, y), points);
 	}
 
-	std::vector<Point> points(this->points.begin() + startIndex, this->points.begin() + endIndex);
-
-	Point weight = weightCenter(this->points);
-	size_t middleIndex = (startIndex + endIndex) / 2;
-	Point middle = this->points[middleIndex];
+	size_t middleIndex = points.size() / 2;
+	Point middle = points[middleIndex];
 	Point target = Point(x, y);
 
-	cv::line(mat, weight, middle, cv::Scalar(0.0f, 0.0f, 1.0f));
-	cv::circle(mat, weight, 5, cv::Vec3f(0.0f, 1.0f, 0.0f));
-	cv::circle(mat, target, 5, cv::Vec3f(0.0f, 0.0f, 1.0f));
-
-	if (!testPointRight(target, weight, middle))
+	std::vector<Point> nextPoints;
+	if (testPointRight(target, points[0], middle))
 	{
+#ifdef VERBOSE
 		std::cerr << "going right" << std::endl;
-		return testConvex(middleIndex, endIndex, weight, x, y, mat);
+#endif
+		nextPoints = std::vector<Point>(points.begin() + middleIndex, points.end());
+		nextPoints.emplace(nextPoints.begin(), points[0]);
 	}
 	else
 	{
+#ifdef VERBOSE
 		std::cerr << "going left" << std::endl;
-		return testConvex(startIndex, middleIndex + 1, weight, x, y, mat);
+#endif
+		nextPoints = std::vector<Point>(points.begin(), points.begin() + middleIndex + 1);
 	}
+
+	return testConvex(nextPoints, x, y, mat);
 }
 
 std::vector<Line> Polygon::getLines()
