@@ -1,11 +1,7 @@
 #pragma once
 
-#ifdef __linux__
 #include <opencv2/opencv.hpp>
-#else
-#include <opencv2/world.hpp>
 #include <opencv2/imgproc.hpp>
-#endif
 #include <vector>
 
 using Point = cv::Point2f;

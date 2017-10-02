@@ -1,14 +1,10 @@
 #include <iostream>
 
-#ifdef __linux__
 #include <opencv2/opencv.hpp>
-#else
-#include <opencv2/world.hpp>
 #include <opencv2/highgui.hpp>
-#endif
 
-#include "lib/polygon.h"
-#include "lib/algo.h"
+#include "polygon.h"
+#include "algo.h"
 
 struct UserData
 {
