@@ -19,9 +19,46 @@ static void parametrizeLine(const Line& line, float &a, float &b, float &c)
 	b = line.first.x - line.second.x;
 	c = a * line.first.x + b * line.first.y;
 }
+static void getLineSlope(const Line& line, float& slopeA, float& slopeC)
+{
+	float a = line.first.x;
+	float b = line.second.x;
+	float c = line.first.y;
+	float d = line.second.y;
 
-// https://www.topcoder.com/community/data-science/data-science-tutorials/geometry-concepts-line-intersection-and-its-applications/
+	slopeA = (d - c) / (b - a);
+	slopeC = -((d - c) / (b - a)) * a + c;
+}
+
+// wikipedia
 Point lineIntersection(const Line& line1, const Line& line2)
+{
+	float a, b, c, d;
+	getLineSlope(line1, a, c);
+	getLineSlope(line2, b, d);
+
+	if (a == b) return INVALID_POINT;
+
+	float x = (d - c) / (a - b);
+	float y = a * x + c;
+
+	float x1 = (x - line1.first.x) / (line1.second.x - line1.first.x);
+	float y1 = (y - line1.first.y) / (line1.second.y - line1.first.y);
+	float x2 = (x - line2.first.x) / (line2.second.x - line2.first.x);
+	float y2 = (y - line2.first.y) / (line2.second.y - line2.first.y);
+
+	if (x1 >= 0.0f && x1 <= 1.0f &&
+		y1 >= 0.0f && y1 <= 1.0f &&
+		x2 >= 0.0f && x2 <= 1.0f &&
+		y2 >= 0.0f && y2 <= 1.0f)
+	{
+		return Point(x, y);
+	}
+
+	return INVALID_POINT;
+}
+// https://www.topcoder.com/community/data-science/data-science-tutorials/geometry-concepts-line-intersection-and-its-applications/
+/*Point lineIntersection(const Line& line1, const Line& line2)
 {
 	float a1, b1, c1;
 	float a2, b2, c2;
@@ -47,7 +84,7 @@ Point lineIntersection(const Line& line1, const Line& line2)
 	}
 
 	return cross;
-}
+}*/
 
 // http://www.geeksforgeeks.org/orientation-3-ordered-points/
 int testPointCCW(const Point& p, const Point& p1, const Point& p2)

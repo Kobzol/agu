@@ -13,7 +13,7 @@ Segment* SweepStatus::below(Segment* segment)
 {
     auto bound = this->lines.lower_bound(segment);
 
-    if (bound == this->lines.begin()) return nullptr;
+    if (bound == this->lines.begin() || bound == this->lines.begin()) return nullptr;
     else return *(--bound);
 }
 void SweepStatus::remove(Segment* segment)

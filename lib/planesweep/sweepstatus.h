@@ -22,6 +22,6 @@ public:
     void remove(Segment* segment);
     void exchange(Segment* segment1, Segment* segment2);
 
-//private:
+private:
     std::set<Segment*, SegmentComparer> lines;
 };

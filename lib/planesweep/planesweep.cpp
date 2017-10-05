@@ -40,6 +40,17 @@ static PriorityQueue<Event> createEventQueue(std::vector<Segment>& segments)
 	return queue;
 }
 
+static void addIfIntersects(std::vector<Event>& events, Segment* above, Segment* below)
+{
+	if (above == nullptr || below == nullptr) return;
+
+	Point intersect = lineIntersection(above->line, below->line);
+	if (intersect != INVALID_POINT)
+	{
+		events.push_back(Event(above, below, intersect));
+	}
+}
+
 using EventFn = void (*)(Event& event, PriorityQueue<Event>& queue, SweepStatus& status, std::vector<Event>& events);
 static void handleStartPoint(Event& event, PriorityQueue<Event>& queue, SweepStatus& status, std::vector<Event>& events)
 {
@@ -48,24 +59,15 @@ static void handleStartPoint(Event& event, PriorityQueue<Event>& queue, SweepSta
 	auto above = status.above(event.segment1);
 	auto below = status.below(event.segment1);
 
-	if (above != nullptr && lineIntersects(above->line, event.segment1->line))
-	{
-		events.push_back(Event(above, event.segment1, lineIntersection(above->line, event.segment1->line)));
-	}
-	if (below != nullptr && lineIntersects(event.segment1->line, below->line))
-	{
-		events.push_back(Event(event.segment1, below, lineIntersection(event.segment1->line, below->line)));
-	}
+	addIfIntersects(events, above, event.segment1);
+	addIfIntersects(events, event.segment1, below);
 }
 static void handleEndPoint(Event& event, PriorityQueue<Event>& queue, SweepStatus& status, std::vector<Event>& events)
 {
 	auto above = status.above(event.segment1);
 	auto below = status.below(event.segment1);
 
-	if (above != nullptr && below != nullptr && lineIntersects(above->line, below->line))
-	{
-		events.push_back(Event(above, below, lineIntersection(above->line, below->line)));
-	}
+	addIfIntersects(events, above, below);
 
 	status.remove(event.segment1);
 }
@@ -76,14 +78,8 @@ static void handleCrossPoint(Event& event, PriorityQueue<Event>& queue, SweepSta
 	auto s3 = status.above(s1);
 	auto s4 = status.below(s2);
 
-	if (s3 != nullptr && lineIntersects(s3->line, s2->line))
-	{
-		events.push_back(Event(s3, s2, lineIntersection(s3->line, s2->line)));
-	}
-	if (s4 != nullptr && lineIntersects(s1->line, s4->line))
-	{
-		events.push_back(Event(s1, s4, lineIntersection(s1->line, s4->line)));
-	}
+	addIfIntersects(events, s3, s2);
+	addIfIntersects(events, s1, s4);
 
 	status.exchange(s1, s2);
 }
@@ -96,7 +92,7 @@ static EventFn selectFn(EventType type)
 		case EventType::Intersection:	return handleCrossPoint;
 	}
 
-    return nullptr;
+	return nullptr;
 }
 
 std::vector<Point> bentleyOttmann(const std::vector<Line>& lines)
@@ -115,6 +111,7 @@ std::vector<Point> bentleyOttmann(const std::vector<Line>& lines)
 
 		selectFn(event.type)(event, queue, status, events);
 
+		// TODO: check if intersection already in event queue
 		for (auto& ev : events)
 		{
 			queue.push(ev);
