@@ -21,7 +21,7 @@ struct UserData
 	Point target;
 };
 
-void CallBackFunc(int event, int x, int y, int flags, void* userdata)
+static void callback(int event, int x, int y, int flags, void* userdata)
 {
 	UserData* data = static_cast<UserData*>(userdata);
 
@@ -53,7 +53,7 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 	}
 }
 
-int main()
+void cviko1()
 {
 	cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
 	Polygon polygon = Polygon::generate(0.0f, 300.0f, 6);
@@ -62,9 +62,7 @@ int main()
 	UserData data(&mat, &polygon);
 
 	cv::namedWindow("Polygon", 1);
-	cv::setMouseCallback("Polygon", CallBackFunc, &data);
+	cv::setMouseCallback("Polygon", callback, &data);
 	cv::imshow("Polygon", mat);
 	cv::waitKey(0);
-
-	return 0;
 }
