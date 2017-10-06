@@ -58,7 +58,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 {
 	if (event == cv::EVENT_LBUTTONDOWN)
 	{
-		endpoints[pointIndex] = Point(x, y);
+		endpoints[pointIndex] = Point(static_cast<float>(x), static_cast<float>(y));
 		pointIndex = (pointIndex + 1) % 2;
 
 		if (pointIndex == 0)

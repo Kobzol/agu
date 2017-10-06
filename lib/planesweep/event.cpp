@@ -11,7 +11,11 @@ Event::Event(Segment* segment1, Segment* segment2, Point point)
 
 }
 
+bool Event::operator<(const Event& other) const
+{
+    return this->point.x < other.point.x;
+}
 bool Event::operator>(const Event& other) const
 {
-    return this->point.x > other.point.x;
+    return !this->operator<(other);
 }

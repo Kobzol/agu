@@ -6,10 +6,13 @@
 
 #include <queue>
 #include <functional>
-#include <set>
 
-template <typename T>
-using PriorityQueue = std::priority_queue<T, std::vector<T>, std::greater<T>>;
+#ifdef USE_STD_PRIORITY_QUEUE
+    template <typename T>
+    using PriorityQueue = std::priority_queue<T, std::vector<T>, std::greater<T>>;
+#else
+    #include "priority_queue.h"
+#endif
 
 static std::vector<Segment> createSegments(const std::vector<Line>& lines)
 {
@@ -47,7 +50,7 @@ static void addIfIntersects(std::vector<Event>& events, Segment* above, Segment*
 	Point intersect = lineIntersection(above->line, below->line);
 	if (intersect != INVALID_POINT)
 	{
-		events.push_back(Event(above, below, intersect));
+		events.emplace_back(above, below, intersect);
 	}
 }
 
@@ -95,6 +98,7 @@ static EventFn selectFn(EventType type)
 	return nullptr;
 }
 
+// TODO: handle special cases
 std::vector<Point> bentleyOttmann(const std::vector<Line>& lines)
 {
 	SweepStatus status;
@@ -107,15 +111,19 @@ std::vector<Point> bentleyOttmann(const std::vector<Line>& lines)
 	while (!queue.empty())
 	{
 		Event event = queue.top();
-		queue.pop();
+        queue.pop();
 
 		selectFn(event.type)(event, queue, status, events);
 
-		// TODO: check if intersection already in event queue
 		for (auto& ev : events)
 		{
-			queue.push(ev);
-			points.push_back(ev.point);
+#ifndef USE_STD_PRIORITY_QUEUE
+            if (!queue.contains(ev))
+#endif
+            {
+                queue.push(ev);
+                points.push_back(ev.point);
+            }
 		}
 		events.clear();
 	}

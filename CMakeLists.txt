@@ -4,7 +4,6 @@ project(agu)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(OpenCV_DIR "D:/pg/Programovani/graphics/agu/opencv")
 find_package(OpenCV REQUIRED)
 
 add_subdirectory("lib")
