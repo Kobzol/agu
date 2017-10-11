@@ -20,7 +20,7 @@ public:
     Segment* above(Segment* segment);
     Segment* below(Segment* segment);
     void remove(Segment* segment);
-    void exchange(Segment* segment1, Segment* segment2);
+    void exchange(Segment* segment1, Segment* segment2, const Point& crossPoint);
 
 private:
     std::set<Segment*, SegmentComparer> lines;

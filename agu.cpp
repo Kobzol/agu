@@ -1,9 +1,10 @@
 void cviko1();
 void cviko2();
+void convexhull();
 
 int main()
 {
-	cviko2();
+	convexhull();
 
 	return 0;
 }

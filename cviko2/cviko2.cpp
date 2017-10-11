@@ -3,7 +3,7 @@
 #include <opencv2/opencv.hpp>
 #include <algo.h>
 
-#include "planesweep/planesweep.h"
+#include <planesweep/planesweep.h>
 
 static std::vector<Line> lines;
 static int pointIndex = 0;
@@ -84,15 +84,20 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 	}
 }
 
-#define OFFSET(x) (x)
+#define OFFSET(x) (600 - x)
 
 void cviko2()
 {
-	lines.emplace_back(Point(86, OFFSET(209)), Point(243, OFFSET(136)));
+	lines.emplace_back(Point(6, OFFSET(63)), Point(418, OFFSET(335)));
+	lines.emplace_back(Point(49, OFFSET(176)), Point(391, OFFSET(161)));
+	lines.emplace_back(Point(123, OFFSET(15)), Point(541, OFFSET(358)));
+	lines.emplace_back(Point(140, OFFSET(335)), Point(564, OFFSET(403)));
+	lines.emplace_back(Point(326, OFFSET(459)), Point(381, OFFSET(153)));
+/*	lines.emplace_back(Point(86, OFFSET(209)), Point(243, OFFSET(136)));
 	lines.emplace_back(Point(118, OFFSET(102)), Point(263, OFFSET(232)));
 	lines.emplace_back(Point(362, OFFSET(141)), Point(193, OFFSET(236)));
 	lines.emplace_back(Point(196, OFFSET(116)), Point(310, OFFSET(101)));
-	lines.emplace_back(Point(327, OFFSET(212)), Point(429, OFFSET(170)));
+	lines.emplace_back(Point(327, OFFSET(212)), Point(429, OFFSET(170)));*/
 
 	cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
 	drawAll(mat, lines);

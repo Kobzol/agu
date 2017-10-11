@@ -12,6 +12,7 @@
     using PriorityQueue = std::priority_queue<T, std::vector<T>, std::greater<T>>;
 #else
     #include "priority_queue.h"
+
 #endif
 
 static std::vector<Segment> createSegments(const std::vector<Line>& lines)
@@ -84,7 +85,7 @@ static void handleCrossPoint(Event& event, PriorityQueue<Event>& queue, SweepSta
 	addIfIntersects(events, s3, s2);
 	addIfIntersects(events, s1, s4);
 
-	status.exchange(s1, s2);
+	status.exchange(s1, s2, event.point);
 }
 static EventFn selectFn(EventType type)
 {

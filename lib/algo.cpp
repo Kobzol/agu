@@ -1,5 +1,9 @@
 #include "algo.h"
-#include <iostream>
+
+cv::Vec2f toVec(const Point& point)
+{
+	return cv::Vec2f(point.x, point.y);
+}
 
 // http://www.cdn.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
 bool lineIntersects(const Line& line1, const Line& line2)
@@ -19,6 +23,7 @@ static void parametrizeLine(const Line& line, float &a, float &b, float &c)
 	b = line.first.x - line.second.x;
 	c = a * line.first.x + b * line.first.y;
 }
+// https://matematika.cz/obecna-rovnice-primky
 static void getLineSlope(const Line& line, float& slopeA, float& slopeC)
 {
 	float a = line.first.x;
@@ -30,7 +35,7 @@ static void getLineSlope(const Line& line, float& slopeA, float& slopeC)
 	slopeC = -((d - c) / (b - a)) * a + c;
 }
 
-// wikipedia
+// https://en.wikipedia.org/wiki/Line-line_intersection
 Point lineIntersection(const Line& line1, const Line& line2)
 {
 	float a, b, c, d;

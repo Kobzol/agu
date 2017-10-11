@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../polygon.h"
+#include "../common.h"
 
 std::vector<Point> bentleyOttmann(const std::vector<Line>& lines);
 

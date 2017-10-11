@@ -25,11 +25,14 @@ void SweepStatus::remove(Segment* segment)
 	}
 }
 
-void SweepStatus::exchange(Segment* segment1, Segment* segment2)
+void SweepStatus::exchange(Segment* segment1, Segment* segment2, const Point& crossPoint)
 {
     this->remove(segment1);
     this->remove(segment2);
 
+	/*segment1->sweepCross = crossPoint;
+	segment2->sweepCross = crossPoint;
+	segment1->sweepCross.y += 0.01f;*/
     std::swap(segment1->sweepCross, segment2->sweepCross);
 
     this->insert(segment1);
