@@ -8,7 +8,7 @@
 static std::vector<Point> points;
 static bool hullCalculated = false;
 
-#define CONVEX_HULL_METHOD (grahamScan)
+#define CONVEX_HULL_METHOD (quickHull)
 
 static void drawPoints(cv::Mat& image, const std::vector<Point>& points, const std::vector<Point>& convexHull)
 {

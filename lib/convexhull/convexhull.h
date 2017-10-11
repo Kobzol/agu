@@ -6,3 +6,4 @@
 
 std::vector<Point> giftWrap(std::vector<Point> points);
 std::vector<Point> grahamScan(std::vector<Point> points);
+std::vector<Point> quickHull(std::vector<Point> points);

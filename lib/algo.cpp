@@ -91,6 +91,17 @@ Point lineIntersection(const Line& line1, const Line& line2)
 	return cross;
 }*/
 
+// https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
+float linePointDistance(const Line& line, const Point& point)
+{
+	float x1 = line.first.x;
+	float y1 = line.first.y;
+	float x2 = line.second.x;
+	float y2 = line.second.y;
+
+	return std::abs((y2 - y1) * point.x - (x2 - x1) * point.y + x2 * y1 - y2 * x1) / std::sqrt(std::pow(y2 - y1, 2) + std::pow(x2 - x1, 2));
+}
+
 // http://www.geeksforgeeks.org/orientation-3-ordered-points/
 int testPointCCW(const Point& p, const Point& p1, const Point& p2)
 {
