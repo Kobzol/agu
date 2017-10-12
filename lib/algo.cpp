@@ -36,7 +36,7 @@ static void getLineSlope(const Line& line, float& slopeA, float& slopeC)
 }
 
 // https://en.wikipedia.org/wiki/Line-line_intersection
-Point lineIntersection(const Line& line1, const Line& line2)
+/*Point lineIntersection(const Line& line1, const Line& line2)
 {
 	float a, b, c, d;
 	getLineSlope(line1, a, c);
@@ -61,9 +61,9 @@ Point lineIntersection(const Line& line1, const Line& line2)
 	}
 
 	return INVALID_POINT;
-}
+}*/
 // https://www.topcoder.com/community/data-science/data-science-tutorials/geometry-concepts-line-intersection-and-its-applications/
-/*Point lineIntersection(const Line& line1, const Line& line2)
+Point lineIntersection(const Line& line1, const Line& line2)
 {
 	float a1, b1, c1;
 	float a2, b2, c2;
@@ -89,7 +89,7 @@ Point lineIntersection(const Line& line1, const Line& line2)
 	}
 
 	return cross;
-}*/
+}
 
 // https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
 float linePointDistance(const Line& line, const Point& point)

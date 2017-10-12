@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 #include <opencv2/opencv.hpp>
 #include <algo.h>
@@ -8,22 +9,10 @@
 static std::vector<Point> points;
 static bool hullCalculated = false;
 
-#define CONVEX_HULL_METHOD (quickHull)
-
-static void drawPoints(cv::Mat& image, const std::vector<Point>& points, const std::vector<Point>& convexHull)
-{
-    for (int i = 0; i < points.size(); i++)
-    {
-		auto& p = points[i];
-        cv::circle(image, p, 2, cv::Scalar(1.0f, 1.0f, 1.0f));
-		cv::putText(image, std::to_string(i), p + Point(0.2f, 0.0f), CV_FONT_HERSHEY_COMPLEX_SMALL, 0.5f, cv::Scalar(0.0f, 1.0f, 0.0f), 1, CV_AA);
-    }
-
-	for (int i = 0; i < convexHull.size(); i++)
-	{
-		cv::line(image, convexHull[i], convexHull[(i + 1) % convexHull.size()], cv::Scalar(0.0f, 0.0f, 1.0f));
-	}
-}
+#define CONVEX_HULL_METHOD (divideAndConquer)
+#define OFFSET(x) (x)
+#define DRAW_OFFSET(x) (600 - x)
+#define SCALE (1.0f)
 
 static void callback(int event, int x, int y, int flags, void* userdata)
 {
@@ -39,35 +28,39 @@ static void callback(int event, int x, int y, int flags, void* userdata)
             points.clear();
         }
 
-        points.emplace_back(static_cast<float>(x), static_cast<float>(y));
-		drawPoints(mat, points, {});
+        points.emplace_back(static_cast<float>(x), static_cast<float>(DRAW_OFFSET(y)));
+		drawHull(mat, points, {});
+
+		/*std::ofstream fs("points.txt");
+		fs << std::endl;
+		for (auto& p : points)
+		{
+			fs << "points.emplace_back(Point(" << p.x << ", OFFSET(" << p.y << ")) * SCALE);" << std::endl;
+		}*/
 	}
 	else
     {
         hullCalculated = true;
-		drawPoints(mat, points, CONVEX_HULL_METHOD(points));
+		drawHull(mat, points, CONVEX_HULL_METHOD(points));
 	}
 
     cv::imshow("Convexhull", mat);
     cv::waitKey(0);
 }
 
-#define OFFSET(x) (x)
-#define SCALE (3.0f)
-
 void convexhull()
 {
-	points.emplace_back(Point(20, OFFSET(22)) * SCALE);
-    points.emplace_back(Point(30, OFFSET(30)) * SCALE);
-    points.emplace_back(Point(40, OFFSET(25)) * SCALE);
-    points.emplace_back(Point(60, OFFSET(40)) * SCALE);
-    points.emplace_back(Point(80, OFFSET(33)) * SCALE);
-	points.emplace_back(Point(75, OFFSET(45)) * SCALE);
-	points.emplace_back(Point(65, OFFSET(28)) * SCALE);
-	points.emplace_back(Point(45, OFFSET(20)) * SCALE);
+	points.emplace_back(Point(141, OFFSET(477)) * SCALE);
+	points.emplace_back(Point(56, OFFSET(455)) * SCALE);
+	points.emplace_back(Point(111, OFFSET(378)) * SCALE);
+	points.emplace_back(Point(173, OFFSET(424)) * SCALE);
+	points.emplace_back(Point(281, OFFSET(560)) * SCALE);
+	points.emplace_back(Point(347, OFFSET(576)) * SCALE);
+	points.emplace_back(Point(354, OFFSET(518)) * SCALE);
+	points.emplace_back(Point(297, OFFSET(484)) * SCALE);
 
 	cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
-    drawPoints(mat, points, {});
+    drawHull(mat, points, {});
 
 	cv::namedWindow("Convexhull", 1);
 	cv::setMouseCallback("Convexhull", callback, nullptr);
