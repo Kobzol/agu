@@ -1,10 +1,11 @@
 void cviko1();
 void cviko2();
 void convexhull();
+void kdtree();
 
 int main()
 {
-	convexhull();
+	kdtree();
 
 	return 0;
 }

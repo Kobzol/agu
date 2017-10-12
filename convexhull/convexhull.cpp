@@ -2,9 +2,10 @@
 #include <fstream>
 
 #include <opencv2/opencv.hpp>
-#include <algo.h>
 
+#include <algo.h>
 #include <convexhull/convexhull.h>
+#include <draw.h>
 
 static std::vector<Point> points;
 static bool hullCalculated = false;

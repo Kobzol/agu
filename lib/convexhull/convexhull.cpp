@@ -4,57 +4,6 @@
 #include <forward_list>
 #include <functional>
 
-template <bool smallest = true>
-static int findExtremePointX(const std::vector<Point>& points)
-{
-    int extreme = 0;
-    size_t size = points.size();
-    for (int i = 1; i < size; i++)
-    {
-		if (smallest)
-		{
-			if (points[i].x < points[extreme].x)
-			{
-				extreme = i;
-			}
-		}
-		else
-		{
-			if (points[i].x > points[extreme].x)
-			{
-				extreme = i;
-			}
-		}
-    }
-
-    return extreme;
-}
-template <bool smallest = true>
-static int findExtremePointY(const std::vector<Point>& points)
-{
-	int extreme = 0;
-	size_t size = points.size();
-	for (int i = 1; i < size; i++)
-	{
-		if (smallest)
-		{
-			if (points[i].y < points[extreme].y)
-			{
-				extreme = i;
-			}
-		}
-		else
-		{
-			if (points[i].y > points[extreme].y)
-			{
-				extreme = i;
-			}
-		}
-	}
-
-	return extreme;
-}
-
 std::vector<Point> giftWrap(std::vector<Point> points)
 {
     int extreme = findExtremePointX<true>(points);
@@ -183,7 +132,7 @@ static std::pair<int, int> twoFinger(const std::vector<Point>& left, const std::
 	int rightOffset = leftOffset;
 	while (true)
 	{
-		int nextl = ((l + leftOffset) + left.size()) % left.size();
+		int nextl = (int) ((l + leftOffset) + left.size()) % left.size();
 		float ly = lineIntersection(Line(left[nextl], right[r]), axis).y;
 		if (comparator(ly, bestY))
 		{
@@ -191,7 +140,7 @@ static std::pair<int, int> twoFinger(const std::vector<Point>& left, const std::
 			bestY = ly;
 		}
 
-		int nextr = ((r + rightOffset) + right.size()) % right.size();
+		int nextr = (int) ((r + rightOffset) + right.size()) % right.size();
 		float ry = lineIntersection(Line(left[l], right[nextr]), axis).y;
 		if (comparator(ry, bestY))
 		{
@@ -238,7 +187,7 @@ static std::vector<Point> divide(std::vector<Point> points)
 	{
 		halves[0].push_back(points[i]);
 	}
-	for (int i = points.size() / 2; i < points.size(); i++)
+	for (size_t i = points.size() / 2; i < points.size(); i++)
 	{
 		halves[1].push_back(points[i]);
 	}
@@ -252,24 +201,4 @@ std::vector<Point> divideAndConquer(std::vector<Point> points)
 	});
 
 	return divide(points);
-}
-
-void drawHull(cv::Mat& image, const std::vector<Point>& points, const std::vector<Point>& convexHull)
-{
-	for (int i = 0; i < points.size(); i++)
-	{
-		auto p = Point(points[i].x, image.rows - points[i].y);
-		cv::circle(image, p, 2, cv::Scalar(1.0f, 1.0f, 1.0f));
-		cv::putText(image, std::to_string(i), p + Point(0.2f, 0.0f), CV_FONT_HERSHEY_COMPLEX_SMALL, 0.5f, cv::Scalar(0.0f, 1.0f, 0.0f), 1, CV_AA);
-	}
-
-	for (int i = 0; i < convexHull.size(); i++)
-	{
-		auto from = convexHull[i];
-		auto to = convexHull[(i + 1) % convexHull.size()];
-		from.y = image.rows - from.y;
-		to.y = image.rows - to.y;
-
-		cv::line(image, from, to, cv::Scalar(0.0f, 0.0f, 1.0f));
-	}
 }

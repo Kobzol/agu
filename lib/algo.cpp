@@ -1,3 +1,5 @@
+#include <functional>
+#include <forward_list>
 #include "algo.h"
 
 cv::Vec2f toVec(const Point& point)
@@ -133,6 +135,15 @@ bool liesInsideTriangle(const Point& point, const std::vector<Point>& triangle)
 	}
 
 	return directions[0] == directions[1] && directions[1] == directions[2];
+}
+
+bool rectContains(const cv::Rect& rectangle, const cv::Point& point)
+{
+	return
+		rectangle.x <= point.x &&
+		point.x < (rectangle.x + rectangle.width) &&
+		rectangle.y >= point.y &&
+		point.y > (rectangle.y - rectangle.height);
 }
 
 Point weightCenter(const std::vector<Point>& points)

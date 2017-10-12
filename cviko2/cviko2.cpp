@@ -4,6 +4,7 @@
 #include <algo.h>
 
 #include <planesweep/planesweep.h>
+#include <draw.h>
 
 static std::vector<Line> lines;
 static int pointIndex = 0;
@@ -28,30 +29,16 @@ std::vector<Point> intersectionsNaive(const std::vector<Line>& lines)
 	return intersections;
 }
 
-static void drawLines(cv::Mat image, const std::vector<Line>& lines)
+
+static void drawAll(cv::Mat& image, const std::vector<Line>& lines)
 {
-	cv::Scalar color(1.0f, 1.0f, 1.0f);
-	for (auto& line : lines)
-	{
-		cv::line(image, line.first, line.second, color, 1, CV_AA);
-	}
-}
-static void drawPoints(cv::Mat image, const std::vector<Point>& points, const cv::Scalar &color, float radius)
-{
-	for (auto& point : points)
-	{
-		cv::circle(image, point, static_cast<int>(radius), color, 1, CV_AA);
-	}
-}
-static void drawAll(const cv::Mat& image, const std::vector<Line>& lines)
-{
-	drawLines(image, lines);
+	drawLines(image, lines, cv::Scalar(1.0f, 1.0f, 1.0f));
 
 	std::vector<Point> intersectsNaive = intersectionsNaive(lines);
-	drawPoints(image, intersectsNaive, cv::Scalar(0, 1, 0), 6);
+	drawPoints(image, intersectsNaive, cv::Scalar(0.0f, 1.0f, 0.0f), 6);
 
 	std::vector<Point> intersectsBentley = bentleyOttmann(lines);
-	drawPoints(image, intersectsBentley, cv::Scalar(0, 0, 1), 4);
+	drawPoints(image, intersectsBentley, cv::Scalar(0.0f, 0.0f, 1.0f), 4);
 }
 
 static void callback(int event, int x, int y, int flags, void* userdata)
@@ -67,7 +54,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 		}
 
 		cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
-		drawLines(mat, lines);
+		drawLines(mat, lines, cv::Scalar(1.0f, 1.0f, 1.0f));
 		cv::imshow("Bentley-Ottmann", mat);
 		cv::waitKey(0);
 	}
@@ -84,7 +71,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 	}
 }
 
-#define OFFSET(x) (600 - x)
+#define OFFSET(x) (x)
 
 void cviko2()
 {

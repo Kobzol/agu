@@ -10,6 +10,7 @@ add_subdirectory("lib")
 add_subdirectory("cviko1")
 add_subdirectory("cviko2")
 add_subdirectory("convexhull")
+add_subdirectory("kdtree")
 
 add_executable(agu agu.cpp)
-target_link_libraries(agu agulib cviko1 cviko2 convexhull ${OpenCV_LIBS})
+target_link_libraries(agu agulib cviko1 cviko2 convexhull kdtree ${OpenCV_LIBS})
