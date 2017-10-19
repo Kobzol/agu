@@ -1,8 +1,8 @@
 #include "polygon.h"
 #include "algo.h"
+#include "convexhull/convexhull.h"
 
 #include <random>
-#include <iostream>
 
 #define VERBOSE
 
@@ -17,7 +17,7 @@ Polygon Polygon::generate(float min, float max, int pointCount)
 		points.push_back(Point(distribution(engine), distribution(engine)));
 	}
 	Polygon polygon;
-	cv::convexHull(points, polygon.points);
+	polygon.points = grahamScan(points);
 	return polygon;
 }
 

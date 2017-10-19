@@ -3,9 +3,8 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
 #include <vector>
-
-using Point = cv::Point2f;
-using Line = std::pair<cv::Point2f, cv::Point2f>;
+#include "common.h"
+;;
 
 class Polygon
 {
