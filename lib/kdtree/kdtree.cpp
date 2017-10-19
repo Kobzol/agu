@@ -15,12 +15,12 @@ static KDTree* buildTree(const Point& point, Axis axis, const std::vector<Point>
             else halves[1].push_back(p);
         }
 
-        for (int i = 0; i < 2; i++)
+        /*for (int i = 0; i < 2; i++)
         {
             std::sort(halves[i].begin(), halves[i].end(), [](const Point& p1, const Point& p2) {
                 return p1.y < p2.y;
             });
-        }
+        }*/
     }
     else
     {
@@ -29,12 +29,12 @@ static KDTree* buildTree(const Point& point, Axis axis, const std::vector<Point>
             if (p.y < point.y) halves[0].push_back(p);
             else halves[1].push_back(p);
         }
-        for (int i = 0; i < 2; i++)
+        /*for (int i = 0; i < 2; i++)
         {
             std::sort(halves[i].begin(), halves[i].end(), [](const Point& p1, const Point& p2) {
                 return p1.x < p2.x;
             });
-        }
+        }*/
     }
 
     for (int i = 0; i < 2; i++)

@@ -26,7 +26,7 @@ static void parametrizeLine(const Line& line, float &a, float &b, float &c)
 	c = a * line.first.x + b * line.first.y;
 }
 // https://matematika.cz/obecna-rovnice-primky
-static void getLineSlope(const Line& line, float& slopeA, float& slopeC)
+void getLineSlope(const Line& line, float& slopeA, float& slopeC)
 {
 	float a = line.first.x;
 	float b = line.second.x;

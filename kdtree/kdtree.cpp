@@ -7,13 +7,14 @@
 #include <draw.h>
 #include <kdtree/kdtree.h>
 
-static std::vector<Point> points;
-static std::unique_ptr<KDTree> tree;
-static int pointIndex = 0;
-static Point rectPoints[2];
-
 #define OFFSET(x) (x)
 #define SCALE (3.0f)
+using TREE = KDTree;
+
+static std::vector<Point> points;
+static std::unique_ptr<TREE> tree;
+static int pointIndex = 0;
+static Point rectPoints[2];
 
 static void callback(int event, int x, int y, int flags, void* userdata)
 {
@@ -32,7 +33,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 			auto found = tree->find(points, rect);
 
 			cv::Rect drawRect(rect.x, image.rows - rect.y, rect.width, rect.height);
-			drawHull(image, points);
+			drawPoints(image, points);
 			cv::rectangle(image, drawRect, cv::Scalar(0.0f, 1.0f, 0.0f), 1, CV_AA);
 			drawPoints(image, found, cv::Scalar(0.0f, 0.0f, 1.0f), 4.0f);
 
@@ -63,7 +64,7 @@ void kdtree()
 	cv::setMouseCallback("KD-tree", callback, nullptr);
 	cv::imshow("KD-tree", mat);
 
-    tree = KDTree::buildTree(points);
+    tree = TREE::buildTree(points);
 	std::cerr << tree->getPointCount() << std::endl;
 
 	cv::waitKey(0);

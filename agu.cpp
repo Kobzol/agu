@@ -5,7 +5,7 @@ void kdtree();
 
 int main()
 {
-	kdtree();
+	cviko2();
 
 	return 0;
 }

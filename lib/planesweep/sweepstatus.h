@@ -3,23 +3,17 @@
 #include <set>
 
 #include "segment.h"
+#include "segmentcomparer.h"
 
-class SegmentComparer
-{
-public:
-    bool operator()(const Segment* s1, const Segment* s2) const
-    {
-        return s1->sweepCross.y < s2->sweepCross.y;
-    }
-};
+extern float SORT_X;
 
 class SweepStatus
 {
 public:
-    void insert(Segment* segment);
-    Segment* above(Segment* segment);
-    Segment* below(Segment* segment);
-    void remove(Segment* segment);
+    void insert(Segment* segment, const Point& location);
+    Segment* above(Segment* segment, const Point& location);
+    Segment* below(Segment* segment, const Point& location);
+    void remove(Segment* segment, const Point& location);
     void exchange(Segment* segment1, Segment* segment2, const Point& crossPoint);
 
 private:
