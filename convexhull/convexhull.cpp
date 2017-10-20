@@ -4,7 +4,7 @@
 #include <opencv2/opencv.hpp>
 
 #include <algo.h>
-#include <convexhull/convexhull.h>
+#include <convexhull/closeness.h>
 #include <draw.h>
 
 static std::vector<Point> points;

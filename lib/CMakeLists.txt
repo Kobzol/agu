@@ -9,5 +9,5 @@ add_library(agulib STATIC
         convexhull/convexhull.cpp
         draw.cpp
         tree/kdtree.cpp
-        tree/intervaltree.cpp tree/intervaltree.h)
+        tree/intervaltree.cpp tree/intervaltree.h closeness/closeness.cpp closeness/closeness.h)
 target_include_directories(agulib PUBLIC ${OpenCV_INCLUDE_DIRS})

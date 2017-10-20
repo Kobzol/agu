@@ -1,6 +1,6 @@
 #include "polygon.h"
 #include "algo.h"
-#include "convexhull/convexhull.h"
+#include "convexhull/closeness.h"
 
 #include <random>
 
