@@ -1,7 +1,16 @@
 #include "kdtree.h"
 #include "../algo.h"
 
-static KDTree* buildTree(const Point& point, Axis axis, const std::vector<Point>& points)
+static std::pair<bool, bool> checkIntersection(Axis axis, const cv::Rect& rectangle, const Point& point)
+{
+	if (axis == Axis::Vertical)
+	{
+		return std::make_pair(rectangle.x < point.x, (rectangle.x + rectangle.width) > point.x);
+	}
+	else return std::make_pair((rectangle.y - rectangle.height) < point.y, rectangle.y > point.y);
+}
+
+KDTree* KDTree::buildTree(const Point& point, Axis axis, const std::vector<Point>& points)
 {
     auto* tree = new KDTree(point, axis);
     if (points.empty()) return tree;
@@ -52,15 +61,6 @@ static KDTree* buildTree(const Point& point, Axis axis, const std::vector<Point>
     return tree;
 }
 
-static std::pair<bool, bool> checkIntersection(Axis axis, const cv::Rect& rectangle, const Point& point)
-{
-	if (axis == Axis::Vertical)
-	{
-		return std::make_pair(rectangle.x < point.x, (rectangle.x + rectangle.width) > point.x);
-	}
-	else return std::make_pair((rectangle.y - rectangle.height) < point.y, rectangle.y > point.y);
-}
-
 std::unique_ptr<KDTree> KDTree::buildTree(std::vector<Point> points)
 {
     auto top = findExtremePointY<false>(points);
@@ -69,7 +69,7 @@ std::unique_ptr<KDTree> KDTree::buildTree(std::vector<Point> points)
 	std::swap(points[top], points.back());
 	points.resize(points.size() - 1);
 
-    return std::unique_ptr<KDTree>(::buildTree(point, Axis::Vertical, points));
+    return std::unique_ptr<KDTree>(KDTree::buildTree(point, Axis::Vertical, points));
 }
 
 KDTree::KDTree(Point point, Axis axis): point(point), axis(axis)
@@ -84,34 +84,34 @@ KDTree::~KDTree()
     }
 }
 
-bool KDTree::is_leaf() const
+bool KDTree::isLeaf() const
 {
     return this->nodes[0] == nullptr && this->nodes[1] == nullptr;
 }
 
-std::vector<Point> KDTree::find(const std::vector<Point>& allPoints, const cv::Rect& rectangle)
+std::vector<Point> KDTree::find(const std::vector<Point>& originalPoints, const cv::Rect& rectangle)
 {
 	std::vector<Point> points;
-	this->find(allPoints, rectangle, Axis::Vertical, points);
+	this->find(rectangle, Axis::Vertical, points);
 	return points;
 }
 
-void KDTree::find(const std::vector<Point>& allPoints, const cv::Rect& rectangle, Axis axis, std::vector<Point>& points)
+void KDTree::find(const cv::Rect& rectangle, Axis axis, std::vector<Point>& points)
 {
 	if (rectContains(rectangle, this->point))
 	{
 		points.push_back(this->point);
 	}
 
-	if (this->is_leaf()) return;
+	if (this->isLeaf()) return;
 
 	auto intersections = checkIntersection(axis, rectangle, this->point);
 	if (this->nodes[0] != nullptr && intersections.first)
 	{
-		this->nodes[0]->find(allPoints, rectangle, (Axis)(1 - (int) axis), points);
+		this->nodes[0]->find(rectangle, (Axis)(1 - (int) axis), points);
 	}
 	if (this->nodes[1] != nullptr && intersections.second)
 	{
-		this->nodes[1]->find(allPoints, rectangle, (Axis)(1 - (int)axis), points);
+		this->nodes[1]->find(rectangle, (Axis)(1 - (int)axis), points);
 	}
 }

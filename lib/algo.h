@@ -19,6 +19,8 @@ bool rectContains(const cv::Rect& rectangle, const cv::Point& point);
 
 Point weightCenter(const std::vector<Point>& points);
 
+void dumpPoints(std::ostream& os, const std::vector<Point>& points);
+
 template <bool smallest = true>
 inline int findExtremePointX(const std::vector<Point>& points)
 {

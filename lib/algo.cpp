@@ -155,3 +155,11 @@ Point weightCenter(const std::vector<Point>& points)
 	}
 	return weight / (float) points.size();
 }
+
+void dumpPoints(std::ostream& os, const std::vector<Point>& points)
+{
+	for (auto& p : points)
+	{
+		os << "points.emplace_back(Point(" << p.x << ", OFFSET(" << p.y << ")) * SCALE);" << std::endl;
+	}
+}

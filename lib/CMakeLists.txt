@@ -8,6 +8,6 @@ add_library(agulib STATIC
         planesweep/segmentcomparer.cpp
         convexhull/convexhull.cpp
         draw.cpp
-        kdtree/kdtree.cpp
-)
+        tree/kdtree.cpp
+        tree/intervaltree.cpp tree/intervaltree.h)
 target_include_directories(agulib PUBLIC ${OpenCV_INCLUDE_DIRS})
