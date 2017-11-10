@@ -57,7 +57,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 		cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
 		drawLines(mat, lines, cv::Scalar(1.0f, 1.0f, 1.0f));
 		cv::imshow("Bentley-Ottmann", mat);
-		cv::waitKey(0);
+		cv::waitKey();
 	}
 	else if (event == cv::EVENT_RBUTTONDOWN)
 	{
@@ -65,14 +65,10 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 		drawAll(mat, lines);
 
 		std::ofstream fs("lines.txt");
-		for (auto& line : lines)
-		{
-			fs << "lines.emplace_back(Point(" << line.first.x << ", OFFSET(" << line.first.y << ")), Point(" << line.second.x << ", OFFSET(" << line.second.y << ")));" << std::endl;
-		}
-		fs.close();
+		dumpLines(fs, lines);
 
 		cv::imshow("Bentley-Ottmann", mat);
-		cv::waitKey(0);
+		cv::waitKey();
 	}
 	else if (event == cv::EVENT_MOUSEMOVE)
 	{
@@ -107,5 +103,5 @@ void cviko2()
 	cv::namedWindow("Bentley-Ottmann", 1);
 	cv::setMouseCallback("Bentley-Ottmann", callback, nullptr);
 	cv::imshow("Bentley-Ottmann", mat);
-	cv::waitKey(0);
+	cv::waitKey();
 }

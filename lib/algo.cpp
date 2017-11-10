@@ -1,6 +1,7 @@
+#include "algo.h"
+
 #include <functional>
 #include <forward_list>
-#include "algo.h"
 
 cv::Vec2f toVec(const Point& point)
 {
@@ -67,16 +68,7 @@ void getLineSlope(const Line& line, float& slopeA, float& slopeC)
 // https://www.topcoder.com/community/data-science/data-science-tutorials/geometry-concepts-line-intersection-and-its-applications/
 Point lineIntersection(const Line& line1, const Line& line2)
 {
-	float a1, b1, c1;
-	float a2, b2, c2;
-
-	parametrizeLine(line1, a1, b1, c1);
-	parametrizeLine(line2, a2, b2, c2);
-
-	float det = a1 * b2 - a2 * b1;
-	if (det == 0) return INVALID_POINT;
-
-	Point cross((b2*c1 - b1*c2) / det, (a1*c2 - a2*c1) / det);
+	Point cross = bisectorIntersection(line1, line2);
 	Line lines[2] = { line1, line2 };
 
 	for (int i = 0; i < 2; i++)
@@ -91,6 +83,20 @@ Point lineIntersection(const Line& line1, const Line& line2)
 	}
 
 	return cross;
+}
+
+Point bisectorIntersection(const Line& line1, const Line& line2)
+{
+	float a1, b1, c1;
+	float a2, b2, c2;
+
+	parametrizeLine(line1, a1, b1, c1);
+	parametrizeLine(line2, a2, b2, c2);
+
+	float det = a1 * b2 - a2 * b1;
+	if (det == 0) return INVALID_POINT;
+
+	return Point((b2*c1 - b1*c2) / det, (a1*c2 - a2*c1) / det);
 }
 
 // https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
@@ -161,5 +167,12 @@ void dumpPoints(std::ostream& os, const std::vector<Point>& points)
 	for (auto& p : points)
 	{
 		os << "points.emplace_back(Point(" << p.x << ", OFFSET(" << p.y << ")) * SCALE);" << std::endl;
+	}
+}
+void dumpLines(std::ostream& os, const std::vector<Line>& lines)
+{
+	for (auto& l : lines)
+	{
+		os << "lines.emplace_back(Point(" << l.first.x << ", OFFSET(" << l.first.y << ")), Point(" << l.second.x << ", OFFSET(" << l.second.y << ")));" << std::endl;
 	}
 }

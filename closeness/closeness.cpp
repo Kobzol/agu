@@ -45,7 +45,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 
 	drawHull(mat, points);
     cv::imshow("Closeness", mat);
-    cv::waitKey(0);
+    cv::waitKey();
 }
 
 void closeness()
@@ -62,5 +62,5 @@ void closeness()
 	cv::namedWindow("Closeness", 1);
 	cv::setMouseCallback("Closeness", callback, nullptr);
 	cv::imshow("Closeness", mat);
-	cv::waitKey(0);
+	cv::waitKey();
 }

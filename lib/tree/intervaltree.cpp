@@ -2,7 +2,7 @@
 
 IntervalTree::IntervalTree(std::vector<Point> points, int start, int end) : points(std::move(points)), start(start), end(end)
 {
-	if (this->points.size() < 1)
+	if (this->points.empty())
 	{
 		throw "Invalid leaf";
 	}
@@ -88,7 +88,7 @@ std::unique_ptr<IntervalTree> IntervalTree::buildTree(std::vector<Point> points)
 	});
 
 	int start = 0;
-	int end = static_cast<int>(points.size());
+	auto end = points.size();
 
 	return std::unique_ptr<IntervalTree>(IntervalTree::buildTree(points, points, start, end));
 }

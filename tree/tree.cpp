@@ -44,7 +44,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 			drawPoints(image, found, cv::Scalar(0.0f, 0.0f, 1.0f), 4.0f);
 
 			cv::imshow("Tree", image);
-			cv::waitKey(0);
+			cv::waitKey();
 		}
 	}
 }
@@ -83,5 +83,5 @@ void tree()
 
     searchtree = Tree::buildTree(points);
 
-	cv::waitKey(0);
+	cv::waitKey();
 }
