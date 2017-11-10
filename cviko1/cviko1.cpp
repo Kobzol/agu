@@ -64,5 +64,5 @@ void cviko1()
 	cv::namedWindow("Polygon", 1);
 	cv::setMouseCallback("Polygon", callback, &data);
 	cv::imshow("Polygon", mat);
-	cv::waitKey(0);
+	cv::waitKey();
 }

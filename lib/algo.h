@@ -9,7 +9,9 @@ cv::Vec2f toVec(const Point& point);
 
 bool lineIntersects(const Line& line1, const Line& line2);
 Point lineIntersection(const Line& line1, const Line& line2);
+Point bisectorIntersection(const Line& line1, const Line& line2);
 float linePointDistance(const Line& line, const Point& point);
+void getLineSlope(const Line& line, float& slopeA, float& slopeC);
 
 int testPointCCW(const Point& p, const Point& p1, const Point& p2);
 bool testPointRight(const Point& point, const Point& from, const Point& to);
@@ -17,6 +19,9 @@ bool liesInsideTriangle(const Point& point, const std::vector<Point>& triangle);
 bool rectContains(const cv::Rect& rectangle, const cv::Point& point);
 
 Point weightCenter(const std::vector<Point>& points);
+
+void dumpPoints(std::ostream& os, const std::vector<Point>& points);
+void dumpLines(std::ostream& os, const std::vector<Line>& lines);
 
 template <bool smallest = true>
 inline int findExtremePointX(const std::vector<Point>& points)

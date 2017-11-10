@@ -1,11 +1,13 @@
 void cviko1();
 void cviko2();
 void convexhull();
-void kdtree();
+void tree();
+void closeness();
+void bsptree();
 
 int main()
 {
-	kdtree();
+	bsptree();
 
 	return 0;
 }

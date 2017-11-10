@@ -4,7 +4,7 @@
 #include <opencv2/opencv.hpp>
 
 #include <algo.h>
-#include <convexhull/convexhull.h>
+#include <convexhull/closeness.h>
 #include <draw.h>
 
 static std::vector<Point> points;
@@ -46,7 +46,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 	}
 
     cv::imshow("Convexhull", mat);
-    cv::waitKey(0);
+    cv::waitKey();
 }
 
 void convexhull()
@@ -66,5 +66,5 @@ void convexhull()
 	cv::namedWindow("Convexhull", 1);
 	cv::setMouseCallback("Convexhull", callback, nullptr);
 	cv::imshow("Convexhull", mat);
-	cv::waitKey(0);
+	cv::waitKey();
 }

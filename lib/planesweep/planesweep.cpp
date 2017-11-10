@@ -58,29 +58,29 @@ static void addIfIntersects(std::vector<Event>& events, Segment* above, Segment*
 using EventFn = void (*)(Event& event, PriorityQueue<Event>& queue, SweepStatus& status, std::vector<Event>& events);
 static void handleStartPoint(Event& event, PriorityQueue<Event>& queue, SweepStatus& status, std::vector<Event>& events)
 {
-	status.insert(event.segment1);
+	status.insert(event.segment1, event.point);
 
-	auto above = status.above(event.segment1);
-	auto below = status.below(event.segment1);
+	auto above = status.above(event.segment1, event.point);
+	auto below = status.below(event.segment1, event.point);
 
 	addIfIntersects(events, above, event.segment1);
 	addIfIntersects(events, event.segment1, below);
 }
 static void handleEndPoint(Event& event, PriorityQueue<Event>& queue, SweepStatus& status, std::vector<Event>& events)
 {
-	auto above = status.above(event.segment1);
-	auto below = status.below(event.segment1);
+	auto above = status.above(event.segment1, event.point);
+	auto below = status.below(event.segment1, event.point);
 
 	addIfIntersects(events, above, below);
 
-	status.remove(event.segment1);
+	status.remove(event.segment1, event.point);
 }
 static void handleCrossPoint(Event& event, PriorityQueue<Event>& queue, SweepStatus& status, std::vector<Event>& events)
 {
 	auto s1 = event.segment1;
 	auto s2 = event.segment2;
-	auto s3 = status.above(s1);
-	auto s4 = status.below(s2);
+	auto s3 = status.above(s1, event.point);
+	auto s4 = status.below(s2, event.point);
 
 	addIfIntersects(events, s3, s2);
 	addIfIntersects(events, s1, s4);

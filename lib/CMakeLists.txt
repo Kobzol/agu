@@ -4,5 +4,10 @@ add_library(agulib STATIC
         planesweep/planesweep.cpp
         planesweep/segment.cpp
         planesweep/event.cpp
-        planesweep/sweepstatus.cpp convexhull/convexhull.h convexhull/convexhull.cpp draw.cpp draw.h kdtree/kdtree.cpp kdtree/kdtree.h)
+        planesweep/sweepstatus.cpp
+        planesweep/segmentcomparer.cpp
+        convexhull/convexhull.cpp
+        draw.cpp
+        tree/kdtree.cpp
+        tree/intervaltree.cpp tree/intervaltree.h closeness/closeness.cpp closeness/closeness.h tree/bsptree.cpp tree/bsptree.h)
 target_include_directories(agulib PUBLIC ${OpenCV_INCLUDE_DIRS})

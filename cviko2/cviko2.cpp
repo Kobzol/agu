@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 #include <opencv2/opencv.hpp>
 #include <algo.h>
@@ -45,7 +46,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 {
 	if (event == cv::EVENT_LBUTTONDOWN)
 	{
-		endpoints[pointIndex] = Point(static_cast<float>(x), static_cast<float>(y));
+		endpoints[pointIndex] = Point(static_cast<float>(x), static_cast<float>(600 - y));
 		pointIndex = (pointIndex + 1) % 2;
 
 		if (pointIndex == 0)
@@ -56,14 +57,18 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 		cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
 		drawLines(mat, lines, cv::Scalar(1.0f, 1.0f, 1.0f));
 		cv::imshow("Bentley-Ottmann", mat);
-		cv::waitKey(0);
+		cv::waitKey();
 	}
 	else if (event == cv::EVENT_RBUTTONDOWN)
 	{
 		cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
 		drawAll(mat, lines);
+
+		std::ofstream fs("lines.txt");
+		dumpLines(fs, lines);
+
 		cv::imshow("Bentley-Ottmann", mat);
-		cv::waitKey(0);
+		cv::waitKey();
 	}
 	else if (event == cv::EVENT_MOUSEMOVE)
 	{
@@ -80,11 +85,17 @@ void cviko2()
 	lines.emplace_back(Point(123, OFFSET(15)), Point(541, OFFSET(358)));
 	lines.emplace_back(Point(140, OFFSET(335)), Point(564, OFFSET(403)));
 	lines.emplace_back(Point(326, OFFSET(459)), Point(381, OFFSET(153)));
-/*	lines.emplace_back(Point(86, OFFSET(209)), Point(243, OFFSET(136)));
-	lines.emplace_back(Point(118, OFFSET(102)), Point(263, OFFSET(232)));
-	lines.emplace_back(Point(362, OFFSET(141)), Point(193, OFFSET(236)));
-	lines.emplace_back(Point(196, OFFSET(116)), Point(310, OFFSET(101)));
-	lines.emplace_back(Point(327, OFFSET(212)), Point(429, OFFSET(170)));*/
+	/*lines.emplace_back(Point(40, OFFSET(485)), Point(151, OFFSET(586)));
+	lines.emplace_back(Point(77, OFFSET(459)), Point(159, OFFSET(552)));
+	lines.emplace_back(Point(106, OFFSET(425)), Point(151, OFFSET(430)));
+	lines.emplace_back(Point(110, OFFSET(479)), Point(150, OFFSET(381)));*/
+
+	/*lines.emplace_back(Point(53.372242185755624, 173.39620884287083), Point(387.8525818239285, 398.87254440778935));
+	lines.emplace_back(Point(80.31526735980506, 339.67057983427924), Point(433.19719584798537, 147.01092888548328));
+	lines.emplace_back(Point(125.66972270166728, 55.743054445253435), Point(232.3797092128601, 192.28367154112865));
+	lines.emplace_back(Point(159.15549167649306, 153.02062212796213), Point(443.29412264971825, 100.62110007192734));
+	lines.emplace_back(Point(163.96688762758603, 206.99734365408403), Point(415.07301876538446, 38.55247900773355));
+	lines.emplace_back(Point(253.00029825515966, 330.25595259609173), Point(346.3358935566799, 361.4159712080646));*/
 
 	cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
 	drawAll(mat, lines);
@@ -92,5 +103,5 @@ void cviko2()
 	cv::namedWindow("Bentley-Ottmann", 1);
 	cv::setMouseCallback("Bentley-Ottmann", callback, nullptr);
 	cv::imshow("Bentley-Ottmann", mat);
-	cv::waitKey(0);
+	cv::waitKey();
 }
