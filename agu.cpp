@@ -4,10 +4,11 @@ void convexhull();
 void tree();
 void closeness();
 void bsptree();
+void triangulation();
 
 int main()
 {
-	bsptree();
+    triangulation();
 
 	return 0;
 }

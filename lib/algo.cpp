@@ -176,3 +176,31 @@ void dumpLines(std::ostream& os, const std::vector<Line>& lines)
 		os << "lines.emplace_back(Point(" << l.first.x << ", OFFSET(" << l.first.y << ")), Point(" << l.second.x << ", OFFSET(" << l.second.y << ")));" << std::endl;
 	}
 }
+
+bool liesInsideCircle(const Point& point, const Point& center, double radius)
+{
+    return cv::norm(toVec(point - center)) <= radius;
+}
+
+void createCircle(const Point& a, const Point& b, const Point& c, Point& center, double& radius)
+{
+	auto b1 = getBisector(Line(a, b));
+	auto b2 = getBisector(Line(b, c));
+
+    center = bisectorIntersection(b1, b2);
+    radius = cv::norm(toVec(center - a));
+}
+
+Line getBisector(const Line& line)
+{
+    auto mid = Point(
+            (line.first.x + line.second.x) / 2.0f,
+            (line.first.y + line.second.y) / 2.0f
+    );
+
+    Point vec = line.second - line.first;
+    std::swap(vec.x, vec.y);    // rotate
+    vec.x *= -1.0f;
+
+    return Line(mid, mid + vec);
+}

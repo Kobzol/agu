@@ -12,6 +12,7 @@ add_subdirectory("cviko2")
 add_subdirectory("convexhull")
 add_subdirectory("tree")
 add_subdirectory("closeness")
+add_subdirectory("triangulation")
 
 add_executable(agu agu.cpp)
-target_link_libraries(agu agulib cviko1 cviko2 convexhull tree closeness ${OpenCV_LIBS})
+target_link_libraries(agu agulib cviko1 cviko2 convexhull tree closeness triangulation ${OpenCV_LIBS})

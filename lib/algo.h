@@ -16,7 +16,11 @@ void getLineSlope(const Line& line, float& slopeA, float& slopeC);
 int testPointCCW(const Point& p, const Point& p1, const Point& p2);
 bool testPointRight(const Point& point, const Point& from, const Point& to);
 bool liesInsideTriangle(const Point& point, const std::vector<Point>& triangle);
+bool liesInsideCircle(const Point& point, const Point& center, double radius);
 bool rectContains(const cv::Rect& rectangle, const cv::Point& point);
+
+Line getBisector(const Line& line);
+void createCircle(const Point& a, const Point& b, const Point& c, Point& center, double& radius);
 
 Point weightCenter(const std::vector<Point>& points);
 
