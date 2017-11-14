@@ -10,13 +10,13 @@ static std::vector<Point> points;
 static bool triangulationCalculated = false;
 static Planarmap map;
 static int lastTriangleId = 0;
+static cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
 
 #define OFFSET(x) (x)
 #define SCALE (1.0f)
 
 static void callback(int event, int x, int y, int flags, void* userdata)
 {
-    cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
     Point point(static_cast<float>(x), static_cast<float>(mat.rows - y));
 
     if (event == cv::EVENT_LBUTTONDOWN)
@@ -27,23 +27,34 @@ static void callback(int event, int x, int y, int flags, void* userdata)
             points.clear();
         }
         points.push_back(point);
-        drawPoints(mat, points);
 
-        cv::imshow("Triangulation", mat);
-        cv::waitKey();
+		mat = cv::Mat::zeros(600, 600, CV_32FC3);
+        drawPoints(mat, points);
     }
     else if (event == cv::EVENT_RBUTTONDOWN)
     {
         triangulationCalculated = true;
         map = triangulate(points);
-        drawLines(mat, mapToLines(map));
-        cv::imshow("Triangulation", mat);
-        cv::waitKey();
 
+		mat = cv::Mat::zeros(600, 600, CV_32FC3);
+        drawLines(mat, mapToLines(map));
+		drawLines(mat, mapToVoronoi(map), cv::Scalar(0.0f, 0.0f, 1.0f));
     }
     else if (event == cv::EVENT_MOUSEMOVE)
     {
-        if (triangulationCalculated)
+		if (triangulationCalculated)
+		{
+			points.resize(points.size() - 1);
+			points.push_back(point);
+			map = triangulate(points);
+
+			mat = cv::Mat::zeros(600, 600, CV_32FC3);
+
+			drawLines(mat, mapToLines(map));
+			drawLines(mat, mapToVoronoi(map), cv::Scalar(0.0f, 0.0f, 1.0f));
+		}
+
+        /*if (triangulationCalculated)
         {
             auto triangles = map.getTriangles();
             if (!triangles.empty())
@@ -68,17 +79,18 @@ static void callback(int event, int x, int y, int flags, void* userdata)
                 cv::imshow("Triangulation", mat);
                 cv::waitKey();
             }
-        }
+        }*/
     }
 }
 
 void triangulation()
 {
-    cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
-
 	cv::namedWindow("Triangulation", 1);
 	cv::setMouseCallback("Triangulation", callback, nullptr);
-	cv::imshow("Triangulation", mat);
-
-	cv::waitKey();
+	
+	while (true)
+	{
+		cv::imshow("Triangulation", mat);
+		if (cv::waitKey(10) == 27) break;	// escape
+	}
 }

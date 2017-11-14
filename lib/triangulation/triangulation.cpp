@@ -1,5 +1,8 @@
 #include "triangulation.h"
 
+#include <random>
+#include <unordered_map>
+
 #include "../tree/triangletree.h"
 #include "../draw.h"
 #include "../algo.h"
@@ -58,7 +61,9 @@ static bool legalizeTriangle(const std::shared_ptr<Triangle>& triangle)
         auto neighbor = triangle->neighbours[i];
         if (neighbor && legalizeEdge(triangle, neighbor, i, (i + 1) % 3))
         {
+#ifdef DRAW
             std::cout << "Legalized " << triangle->id << " with " << neighbor->id << std::endl;
+#endif
             return true;
         }
     }
@@ -150,85 +155,6 @@ static void addPointToTree(Planarmap& map, TriangleTree& tree, const Point& poin
     map.removeTriangle(triangle);
 }
 
-static void joinTriangles(const std::vector<std::shared_ptr<Triangle>>& triangles)
-{
-    for (int i = 0; i < triangles.size(); i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            auto v1 = triangles[i]->vertices[j];
-            auto v2 = triangles[i]->vertices[(j + 1) % 3];
-
-            int t = 0;
-            for (; t < triangles.size(); t++)
-            {
-                if (i == t) continue;
-                if (triangles[t]->getPointIndex(v1) != -1 &&
-                    triangles[t]->getPointIndex(v2) != -1)
-                {
-                    break;
-                }
-            }
-
-            if (t < triangles.size())
-            {
-                triangles[i]->neighbours[j] = triangles[t];
-            }
-        }
-    }
-}
-static void testRightAngle()
-{
-    Planarmap map;
-
-    int startX = 40;
-    int startY = 40;
-
-    std::vector<std::shared_ptr<Vertex>> vertices {
-            map.addVertex(Point(startX - 40, startY + 40)), // pi
-            map.addVertex(Point(startX + 40, startY)), // pk
-            map.addVertex(Point(startX + 40, startY + 80)), // pl
-            map.addVertex(Point(startX + 120, startY + 40)), // pj
-
-            map.addVertex(Point(startX, startY)), // 4 (left down)
-            map.addVertex(Point(startX, startY + 80)), // 5
-            map.addVertex(Point(startX + 80, startY + 80)), // 6
-            map.addVertex(Point(startX + 80, startY))  // 7
-    };
-
-    auto t1 = map.addTriangle({ vertices[0], vertices[3], vertices[2] });
-    auto t2 = map.addTriangle({ vertices[0], vertices[1], vertices[3] });
-    auto t3 = map.addTriangle({ vertices[2], vertices[3], vertices[6] });
-    auto t4 = map.addTriangle({ vertices[5], vertices[0], vertices[2] });
-    auto t5 = map.addTriangle({ vertices[1], vertices[0], vertices[4] });
-    auto t6 = map.addTriangle({ vertices[1], vertices[7], vertices[3] });
-
-    joinTriangles(map.getTriangles());
-
-    for (auto& t: map.getTriangles())
-    {
-        std::cout << *t << std::endl;
-    }
-
-    cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
-    drawPlanarmap(mat, map);
-    cv::imshow("t", mat);
-    cv::waitKey();
-
-    legalizeTriangles(map);
-
-    std::cout << std::endl;
-    for (auto& t: map.getTriangles())
-    {
-        std::cout << *t << std::endl;
-    }
-
-    mat = cv::Mat(600, 600, CV_32FC3);
-    drawPlanarmap(mat, map);
-    cv::imshow("t", mat);
-    cv::waitKey();
-}
-
 static void removeContainingTriangle(Planarmap& map, std::shared_ptr<Triangle> triangle)
 {
     std::vector<std::shared_ptr<Triangle>> toRemove;
@@ -246,9 +172,100 @@ static void removeContainingTriangle(Planarmap& map, std::shared_ptr<Triangle> t
 
     for (auto& t: toRemove)
     {
+		for (auto& triangle : map.getTriangles())
+		{
+			for (int n = 0; n < 3; n++)
+			{
+				if (triangle->neighbours[n] == t)
+				{
+					triangle->neighbours[n] = std::shared_ptr<Triangle>();
+				}
+			}
+		}
         map.removeTriangle(t);
     }
 }
+
+/*
+static void joinTriangles(const std::vector<std::shared_ptr<Triangle>>& triangles)
+{
+	for (int i = 0; i < triangles.size(); i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			auto v1 = triangles[i]->vertices[j];
+			auto v2 = triangles[i]->vertices[(j + 1) % 3];
+
+			int t = 0;
+			for (; t < triangles.size(); t++)
+			{
+				if (i == t) continue;
+				if (triangles[t]->getPointIndex(v1) != -1 &&
+					triangles[t]->getPointIndex(v2) != -1)
+				{
+					break;
+				}
+			}
+
+			if (t < triangles.size())
+			{
+				triangles[i]->neighbours[j] = triangles[t];
+			}
+		}
+	}
+}
+static void testRightAngle()
+{
+	Planarmap map;
+
+	float startX = 40.0f;
+	float startY = 40.0f;
+
+	std::vector<std::shared_ptr<Vertex>> vertices{
+		map.addVertex(Point(startX - 40, startY + 40)), // pi
+		map.addVertex(Point(startX + 40, startY)), // pk
+		map.addVertex(Point(startX + 40, startY + 80)), // pl
+		map.addVertex(Point(startX + 120, startY + 40)), // pj
+
+		map.addVertex(Point(startX, startY)), // 4 (left down)
+		map.addVertex(Point(startX, startY + 80)), // 5
+		map.addVertex(Point(startX + 80, startY + 80)), // 6
+		map.addVertex(Point(startX + 80, startY))  // 7
+	};
+
+	auto t1 = map.addTriangle({ vertices[0], vertices[3], vertices[2] });
+	auto t2 = map.addTriangle({ vertices[0], vertices[1], vertices[3] });
+	auto t3 = map.addTriangle({ vertices[2], vertices[3], vertices[6] });
+	auto t4 = map.addTriangle({ vertices[5], vertices[0], vertices[2] });
+	auto t5 = map.addTriangle({ vertices[1], vertices[0], vertices[4] });
+	auto t6 = map.addTriangle({ vertices[1], vertices[7], vertices[3] });
+
+	joinTriangles(map.getTriangles());
+
+	for (auto& t : map.getTriangles())
+	{
+		std::cout << *t << std::endl;
+	}
+
+	cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
+	drawPlanarmap(mat, map);
+	cv::imshow("t", mat);
+	cv::waitKey();
+
+	legalizeTriangles(map);
+
+	std::cout << std::endl;
+	for (auto& t : map.getTriangles())
+	{
+		std::cout << *t << std::endl;
+	}
+
+	mat = cv::Mat(600, 600, CV_32FC3);
+	drawPlanarmap(mat, map);
+	cv::imshow("t", mat);
+	cv::waitKey();
+}
+*/
 
 std::vector<Line> mapToLines(Planarmap& map)
 {
@@ -263,6 +280,37 @@ std::vector<Line> mapToLines(Planarmap& map)
         }
     }
     return lines;
+}
+std::vector<Line> mapToVoronoi(Planarmap& map)
+{
+	std::unordered_map<std::shared_ptr<Triangle>, Point> centers;
+	for (auto& t : map.getTriangles())
+	{
+		Point center;
+		double radius;
+		createCircle(t->vertices[0]->location, t->vertices[1]->location, t->vertices[2]->location, center, radius);
+		centers[t] = center;
+	}
+
+	std::vector<Line> lines;
+	for (auto& t : map.getTriangles())
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			if (t->neighbours[i])
+			{
+				lines.emplace_back(centers[t], centers[t->neighbours[i]]);
+			}
+			else
+			{
+				auto bisector = getBisector(Line(t->vertices[(i + 1) % 3]->location, t->vertices[i]->location));
+				auto vec = cv::normalize(toVec(bisector.second - bisector.first)) * 500.0f;
+
+				lines.emplace_back(centers[t], bisector.first + toPoint(vec));
+			}
+		}
+	}
+	return lines;
 }
 Planarmap triangulate(std::vector<Point> points)
 {

@@ -7,6 +7,10 @@ cv::Vec2f toVec(const Point& point)
 {
 	return cv::Vec2f(point.x, point.y);
 }
+Point toPoint(const cv::Vec2f& vec)
+{
+	return Point(vec[0], vec[1]);
+}
 
 // http://www.cdn.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
 bool lineIntersects(const Line& line1, const Line& line2)
