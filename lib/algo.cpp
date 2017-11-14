@@ -142,6 +142,7 @@ bool liesInsideTriangle(const Point& point, const std::vector<Point>& triangle)
 	if (directions[0] == 0 || directions[1] == 0 || directions[2] == 0)
 	{
 		std::cerr << "EDGE CASE!!!" << std::endl;
+		return true;
 	}
 
 	return directions[0] == directions[1] && directions[1] == directions[2];
@@ -183,7 +184,7 @@ void dumpLines(std::ostream& os, const std::vector<Line>& lines)
 
 bool liesInsideCircle(const Point& point, const Point& center, double radius)
 {
-    return cv::norm(toVec(point - center)) <= radius;
+    return cv::norm(toVec(point - center)) < radius;
 }
 
 void createCircle(const Point& a, const Point& b, const Point& c, Point& center, double& radius)

@@ -3,6 +3,7 @@
 #include <utility>
 
 #include "../algo.h"
+#include "../draw.h"
 
 TriangleTree::TriangleTree(std::shared_ptr<Triangle> triangle): triangle(std::move(triangle))
 {
@@ -35,6 +36,17 @@ TriangleTree* TriangleTree::find(const Point& point)
             auto res = child->find(point);
             if (res != nullptr) return res;
         }
+
+		for (auto& child : this->children)
+		{
+			cv::Mat mat = cv::Mat::zeros(600, 600, CV_32FC3);
+			drawTriangle(mat, *child->triangle);
+			drawTriangle(mat, *this->triangle, cv::Scalar(0.0f, 0.0f, 1.0f));
+			drawPoints(mat, { point });
+
+			cv::imshow("Test", mat);
+			cv::waitKey(0);
+		}
 
         throw "wrong tree structure";
     }

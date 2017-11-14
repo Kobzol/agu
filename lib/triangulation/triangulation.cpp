@@ -92,7 +92,7 @@ static void legalizeTriangles(Planarmap& map)
                 std::cout << std::endl;
 
                 cv::Mat mat = cv::Mat::zeros(600, 600, CV_32FC3);
-                drawTriangles(mat, map);
+                drawPlanarmap(mat, map);
                 cv::imshow("legalized" + std::to_string(legCounter++), mat);
                 cv::waitKey();
 #endif
@@ -186,7 +186,7 @@ static void removeContainingTriangle(Planarmap& map, std::shared_ptr<Triangle> t
     }
 }
 
-/*
+#ifdef DRAW
 static void joinTriangles(const std::vector<std::shared_ptr<Triangle>>& triangles)
 {
 	for (int i = 0; i < triangles.size(); i++)
@@ -265,7 +265,7 @@ static void testRightAngle()
 	cv::imshow("t", mat);
 	cv::waitKey();
 }
-*/
+#endif
 
 std::vector<Line> mapToLines(Planarmap& map)
 {
@@ -314,7 +314,7 @@ std::vector<Line> mapToVoronoi(Planarmap& map)
 }
 Planarmap triangulate(std::vector<Point> points)
 {
-    Planarmap map;
+	Planarmap map;
     std::vector<std::shared_ptr<Vertex>> containingTriangle {
             map.addVertex(Point(-1000, -1000)),
             map.addVertex(Point(1000, -1000)),
@@ -332,7 +332,7 @@ Planarmap triangulate(std::vector<Point> points)
 
 #ifdef DRAW
     cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
-    drawTriangles(mat, map);
+	drawPlanarmap(mat, map);
     cv::imshow("Before legalization", mat);
     cv::waitKey();
 #endif
