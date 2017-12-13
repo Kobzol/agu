@@ -49,7 +49,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 	}
 }
 
-void tree()
+int main()
 {
 	/*points.emplace_back(Point(10, OFFSET(80)) * SCALE);
 	points.emplace_back(Point(20, OFFSET(30)) * SCALE);
@@ -84,4 +84,6 @@ void tree()
     searchtree = Tree::buildTree(points);
 
 	cv::waitKey();
+
+	return 0;
 }

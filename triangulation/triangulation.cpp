@@ -83,7 +83,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
     }
 }
 
-void triangulation()
+int main()
 {
 	cv::namedWindow("Triangulation", 1);
 	cv::setMouseCallback("Triangulation", callback, nullptr);
@@ -93,4 +93,6 @@ void triangulation()
 		cv::imshow("Triangulation", mat);
 		if (cv::waitKey(10) == 27) break;	// escape
 	}
+
+    return 0;
 }

@@ -23,8 +23,7 @@ struct UserData
 
 static void callback(int event, int x, int y, int flags, void* userdata)
 {
-	UserData* data = static_cast<UserData*>(userdata);
-
+	auto* data = static_cast<UserData*>(userdata);
 	if (event == cv::EVENT_LBUTTONDOWN)
 	{
 		/*if (data->counter == 0)
@@ -48,12 +47,15 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 		cv::line(*data->mat, data->from, data->to, cv::Scalar(0.0, 1.0, 0.0));
 		cv::circle(*data->mat, data->target, 5, cv::Scalar::all(1.0));*/
 
-		std::cout << (data->polygon->test((float) x, (float) y, *data->mat) ? "In" : "Out") << std::endl;
-		cv::imshow("Polygon", *data->mat);
+		cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
+		data->polygon->draw(mat);
+		
+		std::cout << (data->polygon->test((float) x, (float) y, mat) ? "In" : "Out") << std::endl;
+		cv::imshow("Polygon", mat);
 	}
 }
 
-void cviko1()
+int main()
 {
 	cv::Mat mat = cv::Mat(600, 600, CV_32FC3);
 	Polygon polygon = Polygon::generate(0.0f, 300.0f, 6);
@@ -65,4 +67,6 @@ void cviko1()
 	cv::setMouseCallback("Polygon", callback, &data);
 	cv::imshow("Polygon", mat);
 	cv::waitKey();
+
+	return 0;
 }

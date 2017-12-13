@@ -48,7 +48,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
     cv::waitKey();
 }
 
-void closeness()
+int main()
 {
 	points.emplace_back(Point(135, OFFSET(517)) * SCALE);
 	points.emplace_back(Point(173, OFFSET(516)) * SCALE);
@@ -63,4 +63,6 @@ void closeness()
 	cv::setMouseCallback("Closeness", callback, nullptr);
 	cv::imshow("Closeness", mat);
 	cv::waitKey();
+
+	return 0;
 }

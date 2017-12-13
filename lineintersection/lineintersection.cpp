@@ -78,7 +78,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 
 #define OFFSET(x) (x)
 
-void cviko2()
+int main()
 {
 	lines.emplace_back(Point(6, OFFSET(63)), Point(418, OFFSET(335)));
 	lines.emplace_back(Point(49, OFFSET(176)), Point(391, OFFSET(161)));
@@ -104,4 +104,6 @@ void cviko2()
 	cv::setMouseCallback("Bentley-Ottmann", callback, nullptr);
 	cv::imshow("Bentley-Ottmann", mat);
 	cv::waitKey();
+
+	return 0;
 }

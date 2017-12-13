@@ -10,7 +10,7 @@
 static std::vector<Point> points;
 static bool hullCalculated = false;
 
-#define CONVEX_HULL_METHOD (divideAndConquer)
+#define CONVEX_HULL_METHOD (quickHull)
 #define OFFSET(x) (x)
 #define DRAW_OFFSET(x) (600 - x)
 #define SCALE (1.0f)
@@ -49,7 +49,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
     cv::waitKey();
 }
 
-void convexhull()
+int main()
 {
 	points.emplace_back(Point(141, OFFSET(477)) * SCALE);
 	points.emplace_back(Point(56, OFFSET(455)) * SCALE);
@@ -67,4 +67,6 @@ void convexhull()
 	cv::setMouseCallback("Convexhull", callback, nullptr);
 	cv::imshow("Convexhull", mat);
 	cv::waitKey();
+
+	return 0;
 }

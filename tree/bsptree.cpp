@@ -47,7 +47,7 @@ static void callback(int event, int x, int y, int flags, void* userdata)
 	}
 }
 
-void bsptree()
+int main()
 {
 	lines.emplace_back(Point(321, OFFSET(514)), Point(364, OFFSET(379)));
 	lines.emplace_back(Point(364, OFFSET(379)), Point(136, OFFSET(429)));
@@ -65,4 +65,6 @@ void bsptree()
     tree = Tree::buildTree(lines);
 
     cv::waitKey();
+
+    return 0;
 }
